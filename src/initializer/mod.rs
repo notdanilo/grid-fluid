@@ -2,19 +2,19 @@ use crate::Context;
 use crate::fluid::Fluid;
 
 pub struct Initializer {
-    pub raster_program: gpu::RasterProgram
+    pub compute_program: gpu::ComputeProgram
 }
 
 impl Initializer {
     pub fn new(context: &Context) -> Self {
-        let fragment_shader = gpu::FragmentShader::new(&context.context, include_str!("fragment.glsl")).expect("Couldn't create FragmentShader.");
-        let raster_program = gpu::RasterProgram::new(&context.context, &fragment_shader, &context.vertex_shader).expect("Couldn't create RasterProgram.");
-        Self { raster_program }
+        let compute_shader = gpu::ComputeShader::new(&context.context, include_str!("compute.glsl")).expect("Couldn't create ComputeShader.");
+        let compute_program = gpu::ComputeProgram::new(&context.context, &compute_shader).expect("Couldn't create ComputeProgram.");
+        Self { compute_program }
     }
 
     pub fn initialize(&mut self, context: &Context, fluid: &Fluid) {
-        self.raster_program.raster(&fluid.framebuffer, &context.vertex_array_object, gpu::RasterGeometry::Points, 1);
-        context.context.swap_buffers().ok();
-
+        self.compute_program.bind_image_2d(&fluid.velocity, 0);
+        self.compute_program.bind_image_2d(&fluid.density, 1);
+        self.compute_program.compute((512, 512, 1));
     }
 }
