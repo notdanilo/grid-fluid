@@ -1,4 +1,4 @@
-#version 450
+#version 460
 
 layout(rgba32f, location = 0) uniform image2D velocity;
 layout(r32f, location = 1) uniform image2D density;

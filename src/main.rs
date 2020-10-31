@@ -11,7 +11,7 @@ use simulator::Simulator;
 use crate::fluid::Fluid;
 
 fn main() {
-    let dimensions = (512, 512);
+    let dimensions = (128, 128);
     let mut context = Context::new(dimensions);
 
     let mut initializer = Initializer::new(&context);
@@ -24,8 +24,8 @@ fn main() {
 
     initializer.initialize(&context, &mut fluid);
 
+    let delta_time = 0.1;
     while context.context.run() {
-        let delta_time = 0.1;
         simulator.simulate(&mut fluid, delta_time);
         presenter.present(&context, &fluid);
     }

@@ -6,7 +6,8 @@ pub struct Fluid {
     pub density: gpu::Texture2D,
     pub previous_density: gpu::Texture2D,
     pub viscosity: f32,
-    pub diffusion: f32
+    pub diffusion: f32,
+    pub dimensions: (usize, usize)
 }
 
 impl Fluid {
@@ -23,6 +24,10 @@ impl Fluid {
         let density = gpu::Texture2D::allocate(&context.context, dimensions, &density_format);
         let previous_density = gpu::Texture2D::allocate(&context.context, dimensions, &density_format);
 
-        Self { velocity, previous_velocity, density, previous_density, diffusion, viscosity }
+        Self { velocity, previous_velocity, density, previous_density, diffusion, viscosity, dimensions }
+    }
+
+    pub fn inner_volume(&self) -> f32 {
+        ((self.dimensions.0 - 2) * (self.dimensions.1 - 2)) as f32
     }
 }
