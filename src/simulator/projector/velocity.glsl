@@ -13,7 +13,7 @@ const ivec2 offsets[NUMBER_OF_COMPONENTS] = {
 };
 
 void main() {
-    ivec2 coordinate = ivec2(gl_GlobalInvocationID.xy);
+    ivec2 coordinate = ivec2(gl_GlobalInvocationID.xy) + offset;
     vec4 velocity = imageLoad(velocityField, coordinate);
 
     for (int i = 0; i < NUMBER_OF_COMPONENTS; i++) {

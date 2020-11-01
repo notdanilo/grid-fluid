@@ -9,5 +9,5 @@ void main() {
     ivec2 coord = ivec2(gl_FragCoord.xy);
     float density = imageLoad(density, coord).x;
     vec3 velocity = imageLoad(velocity, coord).xyz;
-    color = vec4(velocity, 1.0);
+    color = vec4(vec3(density), 1.0);
 }

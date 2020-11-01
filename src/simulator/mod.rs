@@ -35,11 +35,11 @@ impl Simulator {
         // project velocity.xyz, previous_velocity.xy
         // advect density, previous_density, velocity.xyz
         let iterations = 4;
-        self.diffuser.diffuse(fluid.diffusion, true, &mut fluid.previous_velocity_field, &fluid.velocity_field, delta_time, iterations);
+        // self.diffuser.diffuse(fluid.diffusion, true, &mut fluid.previous_velocity_field, &fluid.velocity_field, delta_time, iterations);
         self.diffuser.diffuse(fluid.diffusion, false, &mut fluid.density_field, &fluid.previous_density_field, delta_time, iterations);
-        self.projector.project(&mut fluid.previous_velocity_field, &mut fluid.velocity_field, iterations);
-        self.advector.advect(&mut fluid.velocity_field, &fluid.previous_velocity_field, &fluid.previous_velocity_field);
-        self.projector.project(&mut fluid.velocity_field, &mut fluid.previous_velocity_field, iterations);
-        self.advector.advect(&mut fluid.density_field, &fluid.previous_density_field, &fluid.velocity_field);
+        // self.projector.project(&mut fluid.previous_velocity_field, &mut fluid.velocity_field, iterations);
+        // self.advector.advect(true, &mut fluid.velocity_field, &fluid.previous_velocity_field, &fluid.previous_velocity_field, delta_time);
+        // self.projector.project(&mut fluid.velocity_field, &mut fluid.previous_velocity_field, iterations);
+        // self.advector.advect(false, &mut fluid.density_field, &fluid.previous_density_field, &fluid.velocity_field, delta_time);
     }
 }
