@@ -13,8 +13,8 @@ impl Initializer {
     }
 
     pub fn initialize(&mut self, context: &Context, fluid: &mut Fluid) {
-        self.compute_program.bind_image_2d(&fluid.velocity, 0);
-        self.compute_program.bind_image_2d(&fluid.density, 1);
+        self.compute_program.bind_image_2d(&fluid.velocity_field, 0);
+        self.compute_program.bind_image_2d(&fluid.density_field, 1);
         self.compute_program.compute((512, 512, 1));
     }
 }

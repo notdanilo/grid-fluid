@@ -18,8 +18,8 @@ impl Presenter {
     }
 
     pub fn present(&mut self, context: &Context, fluid: &Fluid) {
-        self.raster_program.bind_image_2d(&fluid.velocity, 0);
-        self.raster_program.bind_image_2d(&fluid.density, 1);
+        self.raster_program.bind_image_2d(&fluid.velocity_field, 0);
+        self.raster_program.bind_image_2d(&fluid.density_field, 1);
         self.raster_program.raster(&self.framebuffer, &self.vertex_array_object, gpu::RasterGeometry::Points, 1);
         context.context.swap_buffers().ok();
     }

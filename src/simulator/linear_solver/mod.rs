@@ -15,7 +15,7 @@ impl LinearSolver {
         Self { boundary_limiter, compute_program }
     }
 
-    pub fn solve(&self, current_field: &mut gpu::Texture2D, previous_field: &mut gpu::Texture2D, a: f32, c: f32, iterations: usize) {
+    pub fn solve(&self, is_velocity_field: bool, current_field: &mut gpu::Texture2D, previous_field: &gpu::Texture2D, a: f32, c: f32, iterations: usize) {
         let c_reciprocal = 1.0 / c;
         let offset = (1, 1);
 
@@ -34,7 +34,7 @@ impl LinearSolver {
             self.compute_program.bind_image_2d(current_field, CURRENT_FIELD_LOCATION);
             self.compute_program.bind_image_2d(previous_field, PREVIOUS_FIELD_LOCATION);
             self.compute_program.compute(dimensions);
-            self.boundary_limiter.limit(current_field);
+            self.boundary_limiter.limit(current_field, is_velocity_field);
         }
     }
 }

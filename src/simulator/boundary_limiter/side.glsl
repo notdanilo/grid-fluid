@@ -3,6 +3,7 @@
 layout(rgba32f, location = 0) uniform image2D field;
 layout(location = 1) uniform int offset;
 layout(location = 2) uniform ivec2 sideNormal;
+layout(location = 3) uniform bool isVelocityField;
 
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
@@ -39,26 +40,11 @@ void main() {
         ivec2 neighborOffset = sideNormal * (1 - i) - sideNormal * i;
         ivec2 neighborCoordinate = sideCoordinate + neighborOffset;
         vec4 value = imageLoad(field, neighborCoordinate);
-        ivec2 componentNegator = ivec2(1, 1) - (2 * sideNormal);
-        // We then negate the X component by multiplying with a (-1, 1) vector.
-        value *= vec4(componentNegator, 1, 1);
+        if (isVelocityField) {
+            // We then negate the X component by multiplying with a (-1, 1) vector.
+            ivec2 componentNegator = ivec2(1, 1) - (2 * sideNormal);
+            value *= vec4(componentNegator, 1, 1);
+        }
         imageStore(field, sideCoordinate, value);
     }
-
-    /* Reference
-    // X sides
-    for(int k = 1; k < N - 1; k++) {
-        for(int j = 1; j < N - 1; j++) {
-            x[IX(0  , j, k)] = b == 1 ? -x[IX(1  , j, k)] : x[IX(1  , j, k)];
-            x[IX(N-1, j, k)] = b == 1 ? -x[IX(N-2, j, k)] : x[IX(N-2, j, k)];
-        }
-    }
-
-    for(int k = 1; k < N - 1; k++) {
-        for(int i = 1; i < N - 1; i++) {
-            x[IX(i, 0  , k)] = b == 2 ? -x[IX(i, 1  , k)] : x[IX(i, 1  , k)];
-            x[IX(i, N-1, k)] = b == 2 ? -x[IX(i, N-2, k)] : x[IX(i, N-2, k)];
-        }
-    }
-    */
 }
