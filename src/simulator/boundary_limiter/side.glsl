@@ -35,7 +35,7 @@ void main() {
     for (int i = 0; i < 2; i++) {
         // In the X sides case, we will iterate from (0, offset.y) to (0, invocations.y) when i == 0
         // and from (size.y - 1, offset.y) to (size.y - 1, invocations.y) when i == 1.
-        ivec2 sideCoordinate = (coordinate + offset) * sideMask + size * i;
+        ivec2 sideCoordinate = (coordinate + offset) * sideMask + size * sideNormal * i;
         // The neighbor offset is (1, 0) if i == 0 and (-1, 0) if i == 1.
         ivec2 neighborOffset = sideNormal * (1 - i) - sideNormal * i;
         ivec2 neighborCoordinate = sideCoordinate + neighborOffset;

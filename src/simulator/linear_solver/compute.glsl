@@ -29,3 +29,23 @@ void main() {
 
     imageStore(currentField, coordinate, value);
 }
+
+// float cRecip = 1.0 / c;
+// for (int k = 0; k < iter; k++) {
+//     for (int m = 1; m < N - 1; m++) {
+//         for (int j = 1; j < N - 1; j++) {
+//             for (int i = 1; i < N - 1; i++) {
+//                 x[IX(i, j, m)] =
+//                     (x0[IX(i, j, m)]
+//                         + a*(    x[IX(i+1, j  , m  )]
+//                                 +x[IX(i-1, j  , m  )]
+//                                 +x[IX(i  , j+1, m  )]
+//                                 +x[IX(i  , j-1, m  )]
+//                                 +x[IX(i  , j  , m+1)]
+//                                 +x[IX(i  , j  , m-1)]
+//                        )) * cRecip;
+//             }
+//         }
+//     }
+//     set_bnd(b, x, N);
+// }

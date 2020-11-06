@@ -1,5 +1,6 @@
 pub struct Context {
-    pub context: gpu::Context
+    pub context: gpu::Context,
+    pub dimensions: (usize, usize)
 }
 
 impl Context {
@@ -8,6 +9,6 @@ impl Context {
         let context = gpu::ContextBuilder::new().with_display(display).build();
         context.make_current().ok();
 
-        Self { context }
+        Self { context, dimensions }
     }
 }

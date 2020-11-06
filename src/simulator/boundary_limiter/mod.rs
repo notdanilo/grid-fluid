@@ -28,6 +28,7 @@ impl BoundaryLimiter {
         const IS_VELOCITY_FIELD_LOCATION : usize = 3;
         let offset     = 1;
         let dimensions = field.dimensions();
+        let dimensions = (dimensions.0 - 2, dimensions.1 - 2);
         self.side_program.bind_image_2d(field, FIELD_LOCATION);
         self.side_program.bind_i32(offset, OFFSET_LOCATION);
         self.side_program.bind_ivec2((0, 1), SIDE_NORMAL_LOCATION);

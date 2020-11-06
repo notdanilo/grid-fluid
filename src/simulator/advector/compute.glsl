@@ -11,7 +11,7 @@ layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 void main() {
     ivec2 coordinate = ivec2(gl_GlobalInvocationID.xy) + offset;
     ivec2 size = imageSize(field);
-    vec2 deltaTimeSize = deltaTime * size;
+    vec2 deltaTimeSize = deltaTime * (size - ivec2(2, 2));
 
     // FIXME: Considering size.x == size.y == ...
     float N = float(size.x);
@@ -21,10 +21,10 @@ void main() {
     vec2 xy = clamp(vec2(coordinate) - tmp, vec2(0.5), vec2(N + 0.5));
 
     vec2 ij0 = floor(xy);
-    vec2 ij1 = ij0 + 1.0;
+    vec2 ij1 = ij0 + vec2(1.0, 1.0);
 
     vec2 st1 = xy - ij0;
-    vec2 st0 = 1.0 + st1;
+    vec2 st0 = vec2(1.0, 1.0) + st1;
 
     ivec2 coordinate0 = ivec2(ij0);
     ivec2 coordinate1 = ivec2(ij1);
@@ -32,6 +32,10 @@ void main() {
     vec4 value =
         st0.x * (st0.y * imageLoad(previousField, ivec2(ij0.x, ij0.y)) + st1.y * imageLoad(previousField, ivec2(ij0.x, ij1.y))) +
         st1.x * (st0.y * imageLoad(previousField, ivec2(ij1.x, ij0.y)) + st1.y * imageLoad(previousField, ivec2(ij1.x, ij1.y)));
+
+// s0 * (t0 * d0[IX(i0i, j0i)] + t1 * d0[IX(i0i, j1i)]) +
+// s1 * (t0 * d0[IX(i1i, j0i)] + t1 * d0[IX(i1i, j1i)]);
+
 
     imageStore(field, coordinate, value);
 }

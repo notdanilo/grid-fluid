@@ -12,16 +12,38 @@ use simulator::Simulator;
 use fluid::Fluid;
 use interactor::Interactor;
 
+pub struct Field {
+    pub data : Vec<f32>,
+    dimensions: (usize, usize)
+}
+
+impl Field {
+    pub fn new(data: Vec<f32>, dimensions:(usize,usize)) -> Self {
+        Self { data, dimensions }
+    }
+
+    pub fn print(&self) {
+        for i in 0 .. self.dimensions.0 * self.dimensions.1 {
+            let idx = i * 4;
+            print!("({:>10.4}, {:>10.4}, {:>10.4}), ", self.data[idx], self.data[idx + 1], self.data[idx + 2]);
+            if i % self.dimensions.0 == self.dimensions.0 - 1 {
+                println!("");
+            }
+        }
+    }
+}
+
 fn main() {
-    let dimensions = (512, 512);
+    let dimensions = (256, 256);
     let mut context = Context::new(dimensions);
 
+    let dimensions = (5, 5);
     let mut initializer = Initializer::new(&context);
     let mut presenter = Presenter::new(&context);
     let mut simulator = Simulator::new(&context, dimensions);
     let interactor = Interactor::new(&context);
 
-    let diffusion = 0.0;
+    let diffusion = 1.0;
     let viscosity = 0.0000001;
     let mut fluid = Fluid::new(&context, dimensions, diffusion, viscosity);
 
@@ -31,6 +53,9 @@ fn main() {
     while context.context.run() {
         interactor.interact(&mut fluid);
         simulator.simulate(&mut fluid, delta_time);
+//        let field = Field::new(fluid.previous_density_field.data(), dimensions);
+//        field.print();
         presenter.present(&context, &fluid);
     }
+    while context.context.run() {}
 }
