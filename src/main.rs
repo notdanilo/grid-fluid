@@ -22,7 +22,16 @@ impl Field {
         Self { data, dimensions }
     }
 
-    pub fn print(&self) {
+    pub fn print_float(&self) {
+        for i in 0 .. self.dimensions.0 * self.dimensions.1 {
+            print!("{}, ", self.data[i]);
+            if i % self.dimensions.0 == self.dimensions.0 - 1 {
+                println!("");
+            }
+        }
+    }
+
+    pub fn print_vec3(&self) {
         for i in 0 .. self.dimensions.0 * self.dimensions.1 {
             let idx = i * 4;
             print!("({:>10.4}, {:>10.4}, {:>10.4}), ", self.data[idx], self.data[idx + 1], self.data[idx + 2]);
@@ -48,13 +57,13 @@ fn main() {
     let mut fluid = Fluid::new(&context, dimensions, diffusion, viscosity);
 
     initializer.initialize(&context, &mut fluid);
+    let field = Field::new(fluid.density_field.data(), dimensions);
+    field.print_float();
 
     let delta_time = 0.2;
     while context.context.run() {
         interactor.interact(&mut fluid);
         simulator.simulate(&mut fluid, delta_time);
-//        let field = Field::new(fluid.previous_density_field.data(), dimensions);
-//        field.print();
         presenter.present(&context, &fluid);
     }
     while context.context.run() {}

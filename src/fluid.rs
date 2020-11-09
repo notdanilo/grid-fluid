@@ -18,7 +18,7 @@ impl Fluid {
         let velocity_field = gpu::Texture2D::allocate(&context.context, dimensions, &velocity_field_format);
         let previous_velocity_field = gpu::Texture2D::allocate(&context.context, dimensions, &velocity_field_format);
 
-        let color_format = gpu::ColorFormat::RGBA;
+        let color_format = gpu::ColorFormat::R;
         let component_type = gpu::Type::F32;
         let density_field_format = gpu::TextureFormat::new(color_format, component_type);
         let density_field = gpu::Texture2D::allocate(&context.context, dimensions, &density_field_format);
