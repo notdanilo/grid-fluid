@@ -343,6 +343,7 @@ dependencies = [
 name = "grid-fluid"
 version = "0.1.0"
 dependencies = [
+ "gl",
  "gpu",
 ]
 

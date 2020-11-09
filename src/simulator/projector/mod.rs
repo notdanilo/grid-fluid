@@ -46,8 +46,8 @@ impl Projector {
         let dimensions = (dimensions.0, dimensions.1, 1);
         self.initialize_program.compute(dimensions);
 
-        self.boundary_limiter.limit(&mut self.div_field, false);
-        self.boundary_limiter.limit(&mut self.p_field, false);
+        // self.boundary_limiter.limit(&mut self.div_field, false);
+        // self.boundary_limiter.limit(&mut self.p_field, false);
         self.linear_solver.solve(false, &mut self.p_field, &self.div_field, 1.0, 6.0, iterations);
 
         let offset = (1, 1);
@@ -56,7 +56,7 @@ impl Projector {
         self.velocity_program.bind_ivec2(offset, OFFSET_LOCATION);
         self.velocity_program.compute((dimensions.0 - 2, dimensions.1 - 2, 1));
 
-        self.boundary_limiter.limit(velocity_field, true);
+        // self.boundary_limiter.limit(velocity_field, true);
 
         self.previous_velocity_program.bind_image_2d(previous_velocity_field, VELOCITY_FIELD_LOCATION);
         self.previous_velocity_program.bind_image_2d(&self.div_field, DIV_FIELD_LOCATION);

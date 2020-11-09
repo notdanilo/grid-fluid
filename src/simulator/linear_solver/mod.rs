@@ -34,7 +34,7 @@ impl LinearSolver {
             self.compute_program.bind_image_2d(current_field, CURRENT_FIELD_LOCATION);
             self.compute_program.bind_image_2d(previous_field, PREVIOUS_FIELD_LOCATION);
             self.compute_program.compute(dimensions);
-            self.boundary_limiter.limit(current_field, is_velocity_field);
+            // self.boundary_limiter.limit(current_field, is_velocity_field);
         }
     }
 }

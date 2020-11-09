@@ -1,6 +1,6 @@
 #version 450
 
-layout(rgba32f, location = 0) uniform image2D field;
+layout(r32f, location = 0) uniform image2D field;
 layout(location = 1) uniform int offset;
 layout(location = 2) uniform ivec2 sideNormal;
 layout(location = 3) uniform bool isVelocityField;
@@ -8,24 +8,6 @@ layout(location = 3) uniform bool isVelocityField;
 layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 
 void main() {
-//    ivec2 coordinate = ivec2(gl_GlobalInvocationID.xy) + offset;
-//
-//    ivec2 size = ivec2(imageSize(field)) - ivec2(1, 1);
-//    ivec2 lowerCoordinate = coordinate * ivec2(coordinate.x, 0);
-//    ivec2 upperCoordinate = ivec2(coordinate.x, size.y);
-//    ivec2 leftCoordinate  = ivec2(0, coordinate.y);
-//    ivec2 rightCoordinate = ivec2(size.x, coordinate.y);
-//
-//    vec4 lowerValue = imageLoad(field, lowerCoordinate + ivec2(0, 1));
-//    vec4 upperValue = imageLoad(field, upperCoordinate - ivec2(0, 1));
-//    imageStore(field, lowerCoordinate, lowerValue);
-//    imageStore(field, upperCoordinate, upperValue);
-//
-//    vec4 leftValue  = imageLoad(field, leftCoordinate  + ivec2(1, 0));
-//    vec4 rightValue = imageLoad(field, rightCoordinate - ivec2(1, 0));
-//    imageStore(field, leftCoordinate, leftValue);
-//    imageStore(field, rightCoordinate, rightValue);
-
     ivec2 coordinate = ivec2(gl_GlobalInvocationID.xy);
     ivec2 size = ivec2(imageSize(field)) - ivec2(1, 1);
 
@@ -40,11 +22,6 @@ void main() {
         ivec2 neighborOffset = sideNormal * (1 - i) - sideNormal * i;
         ivec2 neighborCoordinate = sideCoordinate + neighborOffset;
         vec4 value = imageLoad(field, neighborCoordinate);
-        if (isVelocityField) {
-            // We then negate the X component by multiplying with a (-1, 1) vector.
-            ivec2 componentNegator = ivec2(1, 1) - (2 * sideNormal);
-            value *= vec4(componentNegator, 1, 1);
-        }
         imageStore(field, sideCoordinate, value);
     }
 }

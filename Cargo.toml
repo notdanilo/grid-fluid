@@ -9,3 +9,4 @@ edition = "2018"
 [dependencies]
 #gpu = "0.2.3"
 gpu = { path = "lib/gpu" }
+gl = "0.14.0"
