@@ -12,7 +12,7 @@ pub struct Fluid {
 
 impl Fluid {
     pub fn new(context: &Context, dimensions: (usize, usize), diffusion: f32, viscosity: f32) -> Self {
-        let color_format = gpu::ColorFormat::RGBA;
+        let color_format = gpu::ColorFormat::RG;
         let component_type = gpu::Type::F32;
         let velocity_field_format = gpu::TextureFormat::new(color_format, component_type);
         let velocity_field = gpu::Texture2D::allocate(&context.context, dimensions, &velocity_field_format);

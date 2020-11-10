@@ -28,18 +28,14 @@ impl Simulator {
     }
 
     pub fn simulate(&mut self, fluid: &mut Fluid, delta_time: f32) {
-        // diffuse previous_velocity.xyz, velocity.xyz
-        // diffuse previous_density.xyz, density.xyz
-        // project previous_velocity.xyz, velocity.xy
-        // advect velocity.xyz, previous_velocity.xyz, previous_velocity.xyz
-        // project velocity.xyz, previous_velocity.xy
-        // advect density, previous_density, velocity.xyz
-        let iterations = 1;
-        self.diffuser.diffuse(fluid.viscosity, true, &mut fluid.previous_velocity_field, &fluid.velocity_field, delta_time, iterations);
-        self.projector.project(&mut fluid.previous_velocity_field, &mut fluid.velocity_field, iterations);
+        std::mem::swap(&mut fluid.density_field, &mut fluid.previous_density_field);
+        std::mem::swap(&mut fluid.velocity_field, &mut fluid.previous_velocity_field);
+        let iterations = 30;
+        // self.diffuser.diffuse(fluid.viscosity, true, &mut fluid.previous_velocity_field, &fluid.velocity_field, delta_time, iterations);
+        // self.projector.project(&mut fluid.previous_velocity_field, &mut fluid.velocity_field, iterations);
         self.advector.advect_vector_with_boundaries(true, &mut fluid.velocity_field, &fluid.previous_velocity_field, &fluid.previous_velocity_field, delta_time);
-        self.projector.project(&mut fluid.velocity_field, &mut fluid.previous_velocity_field, iterations);
-        self.diffuser.diffuse(fluid.diffusion, false, &mut fluid.previous_density_field, &fluid.density_field, delta_time, iterations);
+        // self.projector.project(&mut fluid.velocity_field, &mut fluid.previous_velocity_field, iterations);
+        // self.diffuser.diffuse(fluid.diffusion, false, &mut fluid.previous_density_field, &fluid.density_field, delta_time, iterations);
         self.advector.advect_scalar_with_boundaries(&mut fluid.density_field, &fluid.previous_density_field, &fluid.velocity_field, delta_time);
     }
 }

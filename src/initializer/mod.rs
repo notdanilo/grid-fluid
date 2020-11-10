@@ -7,7 +7,7 @@ pub struct Initializer {
 
 impl Initializer {
     pub fn new(context: &Context) -> Self {
-        let compute_shader = gpu::ComputeShader::new(&context.context, include_str!("scalar_advection.glsl")).expect("Couldn't create ComputeShader.");
+        let compute_shader = gpu::ComputeShader::new(&context.context, include_str!("compute.glsl")).expect("Couldn't create ComputeShader.");
         let compute_program = gpu::ComputeProgram::new(&context.context, &compute_shader).expect("Couldn't create ComputeProgram.");
         Self { compute_program }
     }
