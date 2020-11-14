@@ -1,3 +1,10 @@
+/*
+https://developer.download.nvidia.com/books/HTML/gpugems/gpugems_ch38.html
+http://jamie-wong.com/2016/08/05/webgl-fluid-simulation/
+https://29a.ch/2012/12/16/webgl-fluid-simulation
+https://github.com/jwagner/fluidwebgl/blob/master/src/main.js
+ */
+
 use crate::context::Context;
 use crate::fluid::Fluid;
 use crate::simulator::boundary_limiter::BoundaryLimiter;
@@ -36,5 +43,92 @@ impl LinearSolver {
             self.compute_program.compute(dimensions);
             // self.boundary_limiter.limit(current_field, is_velocity_field);
         }
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use crate::context::Context;
+    use crate::simulator::linear_solver::LinearSolver;
+    use crate::initializer::Initializer;
+
+    fn initialize(dimensions: (usize, usize)) -> (Context, LinearSolver, gpu::Texture2D, gpu::Texture2D) {
+        let context = Context::new(dimensions);
+        let linear_solver = LinearSolver::new(&context);
+        let (field, previous_field) = initialize_fields(&context);
+        (context, linear_solver, field, previous_field)
+    }
+
+    fn initialize_vector(dimensions: (usize, usize)) -> (Context, LinearSolver, gpu::Texture2D, gpu::Texture2D) {
+        let context = Context::new(dimensions);
+        let linear_solver = LinearSolver::new(&context);
+        let (field, previous_field) = initialize_vector_fields(&context);
+        (context, linear_solver, field, previous_field)
+    }
+
+    fn initialize_vector_fields(context: &Context) -> (gpu::Texture2D, gpu::Texture2D) {
+        let dimensions = (5, 5);
+        let data = vec![
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+        ];
+
+        let previous_data = vec![
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 1.0, 1.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+            0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0, /**/ 0.0, 0.0,
+        ];
+
+        let color_format = gpu::ColorFormat::RG;
+        let component_type = gpu::Type::F32;
+        let format = gpu::TextureFormat::new(color_format, component_type);
+
+        let mut field = gpu::Texture2D::from_data(&context.context, dimensions, &format, &data, &format);
+        let previous_field = gpu::Texture2D::from_data(&context.context, dimensions, &format, &previous_data, &format);
+        assert_eq!(field.data() as Vec<f32>, data);
+        assert_eq!(previous_field.data() as Vec<f32>, previous_data);
+        (field, previous_field)
+    }
+
+    fn initialize_fields(context: &Context) -> (gpu::Texture2D, gpu::Texture2D) {
+        let dimensions = (5, 5);
+        let data = vec![
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0
+        ];
+
+        let previous_data = vec![
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 1.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0
+        ];
+
+        let color_format = gpu::ColorFormat::R;
+        let component_type = gpu::Type::F32;
+        let format = gpu::TextureFormat::new(color_format, component_type);
+
+        let mut field = gpu::Texture2D::from_data(&context.context, dimensions, &format, &data, &format);
+        let previous_field = gpu::Texture2D::from_data(&context.context, dimensions, &format, &previous_data, &format);
+        assert_eq!(field.data() as Vec<f32>, data);
+        assert_eq!(previous_field.data() as Vec<f32>, previous_data);
+        (field, previous_field)
+    }
+
+    #[test]
+    fn linear_solve() {
+        let dimensions = (5, 5);
+        let (context, linear_solver, mut field, previous_field) = initialize(dimensions);
+
+        linear_solver.solve(false, )
     }
 }
