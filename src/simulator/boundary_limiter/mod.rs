@@ -38,6 +38,11 @@ impl BoundaryLimiter {
         program.compute((dimensions.0, 2, 1));
         program.bind_ivec2((1, 0), SIDE_NORMAL_LOCATION);
         program.compute((2, dimensions.1, 1));
+        //FIXME: How to expose it on the GPU API?
+        // Ref: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glMemoryBarrier.xhtml
+        unsafe {
+            gl::MemoryBarrier(gl::SHADER_IMAGE_ACCESS_BARRIER_BIT);
+        }
     }
 
     fn limit_sides_scalar(&self, field: &mut gpu::Texture2D) {
@@ -53,6 +58,11 @@ impl BoundaryLimiter {
         let dimensions = (2, 2, 1);
         program.bind_image_2d(field, FIELD_LOCATION);
         program.compute(dimensions);
+        //FIXME: How to expose it on the GPU API?
+        // Ref: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glMemoryBarrier.xhtml
+        unsafe {
+            gl::MemoryBarrier(gl::SHADER_IMAGE_ACCESS_BARRIER_BIT);
+        }
     }
 
     fn limit_corners_scalar(&self, field: &mut gpu::Texture2D) {

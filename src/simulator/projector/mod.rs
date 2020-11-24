@@ -1,6 +1,11 @@
+mod divergence;
+mod gradient;
+
 use crate::context::Context;
 use crate::simulator::boundary_limiter::BoundaryLimiter;
 use crate::simulator::linear_solver::LinearSolver;
+use divergence::Divergence;
+use gradient::Gradient;
 
 pub struct Projector {
     initialize_program : gpu::ComputeProgram,
@@ -9,7 +14,9 @@ pub struct Projector {
     div_field: gpu::Texture2D,
     p_field: gpu::Texture2D,
     boundary_limiter: BoundaryLimiter,
-    linear_solver: LinearSolver
+    linear_solver: LinearSolver,
+    gradient_program: Gradient,
+    divergence_program: Divergence
 }
 
 impl Projector {
@@ -30,8 +37,11 @@ impl Projector {
         let p_field   = gpu::Texture2D::allocate(&context.context, fluid_dimensions, &texture_format);
 
         let boundary_limiter = BoundaryLimiter::new(context);
-        let linear_solver = LinearSolver::new(context);
-        Self { initialize_program, div_field, p_field, boundary_limiter, linear_solver, velocity_program, previous_velocity_program }
+        let linear_solver = LinearSolver::new(context, fluid_dimensions);
+
+        let gradient_program = Gradient::new();
+        let divergence_program = Divergence::new();
+        Self { initialize_program, gradient_program, divergence_program, div_field, p_field, boundary_limiter, linear_solver, velocity_program, previous_velocity_program }
     }
 
     pub fn project(&mut self, velocity_field: &mut gpu::Texture2D, previous_velocity_field: &mut gpu::Texture2D, iterations: usize) {

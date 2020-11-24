@@ -27,6 +27,5 @@ impl Presenter {
         self.raster_program.bind_vec2((context.dimensions.0 as f32, context.dimensions.1 as f32), VIEWPORT_DIMENSIONS_LOCATION);
         self.raster_program.bind_vec2((fluid.dimensions.0 as f32, fluid.dimensions.1 as f32), FIELD_DIMENSIONS_LOCATION);
         self.raster_program.raster(&self.framebuffer, &self.vertex_array_object, gpu::RasterGeometry::Points, 1);
-        context.context.swap_buffers().ok();
     }
 }

@@ -7,12 +7,12 @@ pub struct Diffuser {
 }
 
 impl Diffuser {
-    pub fn new(context: &Context) -> Self {
-        let linear_solver = LinearSolver::new(context);
+    pub fn new(context: &Context, dimensions: (usize,usize)) -> Self {
+        let linear_solver = LinearSolver::new(context, dimensions);
         Self { linear_solver }
     }
 
-    pub fn diffuse(&self, diffusion: f32, is_velocity_field: bool, current_field: &mut gpu::Texture2D, previous_field: &gpu::Texture2D, delta_time: f32, iterations: usize) {
+    pub fn diffuse(&mut self, diffusion: f32, is_velocity_field: bool, current_field: &mut gpu::Texture2D, previous_field: &gpu::Texture2D, delta_time: f32, iterations: usize) {
         let dimensions = current_field.dimensions();
         let dimensions = (dimensions.0 - 2, dimensions.1 - 2); // inner volume without the borders.
         let volume = (dimensions.0 * dimensions.1) as f32;

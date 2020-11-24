@@ -21,7 +21,7 @@ pub struct Simulator {
 
 impl Simulator {
     pub fn new(context: &Context, dimensions: (usize, usize)) -> Self {
-        let diffuser = Diffuser::new(context);
+        let diffuser = Diffuser::new(context, dimensions);
         let advector = Advector::new(context);
         let projector = Projector::new(context, dimensions);
         Self { diffuser, advector, projector }
@@ -33,9 +33,11 @@ impl Simulator {
         let iterations = 30;
         // self.diffuser.diffuse(fluid.viscosity, true, &mut fluid.previous_velocity_field, &fluid.velocity_field, delta_time, iterations);
         // self.projector.project(&mut fluid.previous_velocity_field, &mut fluid.velocity_field, iterations);
-        self.advector.advect_vector_with_boundaries(true, &mut fluid.velocity_field, &fluid.previous_velocity_field, &fluid.previous_velocity_field, delta_time);
+        // self.advector.advect_vector_with_boundaries(true, &mut fluid.velocity_field, &fluid.previous_velocity_field, &fluid.previous_velocity_field, delta_time);
         // self.projector.project(&mut fluid.velocity_field, &mut fluid.previous_velocity_field, iterations);
         // self.diffuser.diffuse(fluid.diffusion, false, &mut fluid.previous_density_field, &fluid.density_field, delta_time, iterations);
-        self.advector.advect_scalar_with_boundaries(&mut fluid.density_field, &fluid.previous_density_field, &fluid.velocity_field, delta_time);
+        //self.advector.advect_vector_with_boundaries(true, &mut fluid.velocity_field, &fluid.previous_velocity_field, &fluid.previous_velocity_field, delta_time);
+        self.advector.advect_vector(&mut fluid.velocity_field, &fluid.previous_velocity_field, &fluid.previous_velocity_field, delta_time);
+        self.advector.advect_scalar(&mut fluid.density_field, &fluid.previous_density_field, &fluid.velocity_field, delta_time);
     }
 }

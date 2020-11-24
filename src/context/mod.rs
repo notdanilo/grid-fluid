@@ -11,4 +11,8 @@ impl Context {
 
         Self { context, dimensions }
     }
+
+    pub fn present(&mut self) {
+        self.context.swap_buffers().ok();
+    }
 }

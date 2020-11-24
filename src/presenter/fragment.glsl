@@ -10,6 +10,6 @@ out vec4 color;
 void main() {
     ivec2 coord = ivec2(gl_FragCoord.xy);
     float density = imageLoad(density, coord).x;
-    vec3 velocity = imageLoad(velocity, coord).xyz;
+    vec2 velocity = imageLoad(velocity, coord).xy;
     color = vec4(vec3(density), 1.0);
  }
